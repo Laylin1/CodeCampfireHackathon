@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hackathon.CodeCampfire.Repo.PostRepo;
+import com.hackathon.CodeCampfire.Repo.PostRepoChallenges;
 import com.hackathon.CodeCampfire.Repo.PostRepoProjects;
 import com.hackathon.CodeCampfire.modelData.AuthDTO;
+import com.hackathon.CodeCampfire.modelData.ChallengeCreateDTO;
+import com.hackathon.CodeCampfire.modelData.Challenges;
 import com.hackathon.CodeCampfire.modelData.LoginDTO;
 import com.hackathon.CodeCampfire.modelData.ProjectCreateDTO;
 import com.hackathon.CodeCampfire.modelData.ProjectsTable;
@@ -34,6 +37,9 @@ public class PostController {
     @Autowired
     PostRepoProjects preroProj;
 
+    @Autowired
+    PostRepoChallenges preroChallenges;
+
     //перенаправление при обращении к корню проекта
     @RequestMapping(value="/")
     public void redirect(HttpServletResponse response) throws IOException{
@@ -42,8 +48,8 @@ public class PostController {
 
     
     //Получение человека по Id
-   @GetMapping("/getAuth/{id}")
-    public ResponseEntity<Users> getAuthData(@PathVariable String id) {
+   @GetMapping("/getUser/{id}")
+    public ResponseEntity<Users> getUserData(@PathVariable String id) {
         Optional<Users> userOpt = prepo.findById(id);
 
         if (userOpt.isPresent()) {
@@ -91,8 +97,14 @@ public class PostController {
     }
 
 
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<Users>> getAllUsers() {
+        List<Users> users = prepo.findAll();
+        return ResponseEntity.ok(users);
+    }
 
-    @PostMapping("/ProjectsTable")
+
+    @PostMapping("/createProject")
     public ProjectsTable postproj(@RequestBody ProjectCreateDTO post){
         return preroProj.save(post.toProjectsTable());
     }
@@ -103,6 +115,20 @@ public class PostController {
     {
         List<ProjectsTable> projects = preroProj.findAll();
         return ResponseEntity.ok(projects);
+    }
+
+
+    @PostMapping("/createChallenge")
+    public ResponseEntity<String> createChallenge(@RequestBody ChallengeCreateDTO challenge) {
+        preroChallenges.save(challenge.toChallenges());
+        return ResponseEntity.ok("Challenge created successfully!");
+    }
+
+    @GetMapping("/challenges")
+    public ResponseEntity<List<Challenges>> getAllChallenges() 
+    {
+        List<Challenges> challenges = preroChallenges.findAll();
+        return ResponseEntity.ok(challenges);
     }
 
 }
