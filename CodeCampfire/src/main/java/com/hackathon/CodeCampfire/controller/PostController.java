@@ -117,6 +117,12 @@ public class PostController {
         return ResponseEntity.ok(projects);
     }
 
+    @GetMapping("/getUserProjects/{id}")
+    public ResponseEntity<List<ProjectsTable>> getUserProjects(@PathVariable String id) {
+        List<ProjectsTable> projects = preroProj.findByAuthor(id);
+        return ResponseEntity.ok(projects);
+    }
+
 
     @PostMapping("/createChallenge")
     public ResponseEntity<String> createChallenge(@RequestBody ChallengeCreateDTO challenge) {
@@ -128,6 +134,12 @@ public class PostController {
     public ResponseEntity<List<Challenges>> getAllChallenges() 
     {
         List<Challenges> challenges = preroChallenges.findAll();
+        return ResponseEntity.ok(challenges);
+    }
+
+    @GetMapping("/getUserChallenges/{id}")
+    public ResponseEntity<List<Challenges>> getUserChallenges(@PathVariable String id) {
+        List<Challenges> challenges = preroChallenges.findByAuthor(id);
         return ResponseEntity.ok(challenges);
     }
 
