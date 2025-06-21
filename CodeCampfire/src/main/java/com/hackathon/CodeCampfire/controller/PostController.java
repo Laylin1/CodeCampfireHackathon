@@ -1,22 +1,23 @@
 package com.hackathon.CodeCampfire.controller;
 
 import java.io.IOException;
-import java.util.List;
-
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hackathon.CodeCampfire.Repo.PostRepo;
+import com.hackathon.CodeCampfire.Repo.PostRepoProjects;
 import com.hackathon.CodeCampfire.modelData.AuthDTO;
 import com.hackathon.CodeCampfire.modelData.LoginDTO;
+import com.hackathon.CodeCampfire.modelData.ProjectsTable;
 import com.hackathon.CodeCampfire.modelData.Users;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +27,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class PostController {
 
     @Autowired
-    PostRepo prepo;;
+    PostRepo prepo;
+
+    @Autowired
+    PostRepoProjects preroProj;
 
     //перенаправление при обращении к корню проекта
     @RequestMapping(value="/")
@@ -35,11 +39,18 @@ public class PostController {
     }
 
     
-    //Получение всех данных
-    @GetMapping("/getAuth")
-    public List<Users> getAuthData(){
-        return prepo.findAll();
+    //Получение человека по Id
+   @GetMapping("/getAuth/{id}")
+    public ResponseEntity<Users> getAuthData(@PathVariable String id) {
+        Optional<Users> userOpt = prepo.findById(id);
+
+        if (userOpt.isPresent()) {
+            return ResponseEntity.ok(userOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
+
 
     //Отправка всех данных
     @PostMapping("/postAllData")
@@ -61,22 +72,27 @@ public class PostController {
     }
 
 
+    // отправляет данные от логина
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
+    public ResponseEntity<String> login(@RequestBody LoginDTO dto) {
         Users user = prepo.findByEmail(dto.getEmail());
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
 
-        boolean passwordMatches = BCrypt.checkpw(dto.getPassword(), user.getPasswordHash());
-        if (!passwordMatches) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+        if (!dto.getPassword().equals(user.getPasswordHash())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
         }
 
-        return ResponseEntity.ok("Login successful");
+        return ResponseEntity.ok("Login successful!");
     }
 
 
+
+    @PostMapping("/ProjectsTable")
+    public ProjectsTable postproj(@RequestBody ProjectsTable post){
+        return preroProj.save(post);
+    }
 
 }
