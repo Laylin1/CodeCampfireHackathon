@@ -13,6 +13,7 @@ import lombok.Setter;
 public class Challenges {
 
     @Id
+    @Getter @Setter
     private String id;
 
     @Getter @Setter
