@@ -9,9 +9,9 @@ import com.hackathon.CodeCampfire.modelData.Users;
 
 public interface PostRepo extends MongoRepository<Users,String>{
         // Поиск по email (для логина)
-    Users findByEmail(String email);
-
     Optional<Users> findById(String id);
+
+    Optional<Users> findByEmail(String email);
 
     // Можно добавить другие методы, например:
     boolean existsByEmail(String email);

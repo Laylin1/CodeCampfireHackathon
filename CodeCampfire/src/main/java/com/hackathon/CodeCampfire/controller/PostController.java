@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.hackathon.CodeCampfire.Repo.PostRepo;
 import com.hackathon.CodeCampfire.Repo.PostRepoChallenges;
@@ -35,6 +36,10 @@ public class PostController {
     PostRepo prepo;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+
+    @Autowired
     PostRepoProjects preroProj;
 
     @Autowired
@@ -48,7 +53,7 @@ public class PostController {
 
     
     //Получение человека по Id
-   @GetMapping("/getUser/{id}")
+    @GetMapping("/getUser/{id}")
     public ResponseEntity<Users> getUserData(@PathVariable String id) {
         Optional<Users> userOpt = prepo.findById(id);
 
@@ -60,21 +65,13 @@ public class PostController {
     }
 
 
-    //Отправка всех данных
-    @PostMapping("/postAllData")
-    public Users postAllData(@RequestBody Users post){
-        return prepo.save(post);
-    }
-
-
     //Отправка данных для авторизации
     @PostMapping("/postAuthData")
-    public Users postAuth(@RequestBody AuthDTO dto){
-
+    public Users postAuth(@RequestBody AuthDTO dto) {
         Users user = new Users();
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
-        user.setPasswordHash(dto.getPasswordHash());
+        user.setPasswordHash(passwordEncoder.encode(dto.getPasswordHash())); // 🔐 ВАЖНО!
 
         return prepo.save(user);
     }
@@ -83,15 +80,18 @@ public class PostController {
     // отправляет данные от логина
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO dto) {
-        Users user = prepo.findByEmail(dto.getEmail());
+        Optional<Users> userOpt = prepo.findByEmail(dto.getEmail());
 
-        if (user == null) {
+        if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
 
-        if (!dto.getPassword().equals(user.getPasswordHash())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
-        }
+        Users user = userOpt.get();
+
+    if (!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+    }
+
 
         return ResponseEntity.ok("Login successful!");
     }
