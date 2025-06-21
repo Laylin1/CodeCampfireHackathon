@@ -1,33 +1,33 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import cl from "./LoginForm.module.css"
-import { Link } from "react-router-dom";
+import cl from "./RegisterForm.module.css"
+import { Link, useNavigate } from "react-router-dom";
+export default function RegisterForm() {
 
-export default function LoginForm() {
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
         formState: { errors },
+        reset
     } = useForm();
 
     const onSubmit = (data) => {
         console.log("Login Data:", data);
+        reset()
+
+        navigate("/signin")
     };
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
             <div className="bg-white w-full max-w-sm rounded-3xl shadow-lg p-8">
-                <h2 className={`${cl.formHeaderText} text-3xl font-semibold text-center mb-8`}>
-                    Sign In
+                <h2 className={`text-3xl font-semibold text-center mb-8 ${cl.formHeaderText}`}>
+                    Register
                 </h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
-                        <label
-                            htmlFor="username"
-                            className="block text-gray-700 font-medium mb-2"
-                        >
-                            Username
-                        </label>
+                        <label htmlFor="username" className="block text-gray-700 font-medium mb-2">Username</label>
                         <input
                             id="username"
                             type="text"
@@ -45,6 +45,25 @@ export default function LoginForm() {
                     </div>
 
                     <div>
+                        <label htmlFor="username" className="block text-gray-700 font-medium mb-2">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            {...register("email", { required: "Email is required" })}
+                            className={`w-full px-4 py-3 rounded-xl border text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${errors.email
+                                ? "border-red-500 focus:ring-red-400"
+                                : "border-gray-300"
+                                }`}
+                        />
+                        {errors.email && (
+                            <p className="text-red-500 text-xs mt-1 italic">
+                                {errors.email.message}
+                            </p>
+                        )}
+                    </div>
+
+
+                    <div>
                         <label
                             htmlFor="password"
                             className="block text-gray-700 font-medium mb-2"
@@ -54,6 +73,7 @@ export default function LoginForm() {
                         <input
                             id="password"
                             type="password"
+
                             {...register("password", {
                                 required: "Please choose a password.",
                             })}
@@ -77,10 +97,10 @@ export default function LoginForm() {
                             Register
                         </button>
                         <Link
-                            to={"/register"}
+                            to={"/signin"}
                             className="text-sm font-medium text-indigo-500 hover:text-blue-800"
                         >
-                            Create an account
+                            Alredy have an account?
                         </Link>
                     </div>
                 </form>
