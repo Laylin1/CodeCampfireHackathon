@@ -1,6 +1,7 @@
 package com.hackathon.CodeCampfire.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.hackathon.CodeCampfire.Repo.PostRepo;
 import com.hackathon.CodeCampfire.Repo.PostRepoProjects;
 import com.hackathon.CodeCampfire.modelData.AuthDTO;
 import com.hackathon.CodeCampfire.modelData.LoginDTO;
+import com.hackathon.CodeCampfire.modelData.ProjectCreateDTO;
 import com.hackathon.CodeCampfire.modelData.ProjectsTable;
 import com.hackathon.CodeCampfire.modelData.Users;
 
@@ -91,8 +93,16 @@ public class PostController {
 
 
     @PostMapping("/ProjectsTable")
-    public ProjectsTable postproj(@RequestBody ProjectsTable post){
-        return preroProj.save(post);
+    public ProjectsTable postproj(@RequestBody ProjectCreateDTO post){
+        return preroProj.save(post.toProjectsTable());
+    }
+
+
+    @GetMapping("/projects")
+    public ResponseEntity<List<ProjectsTable>> getAllProjects() 
+    {
+        List<ProjectsTable> projects = preroProj.findAll();
+        return ResponseEntity.ok(projects);
     }
 
 }

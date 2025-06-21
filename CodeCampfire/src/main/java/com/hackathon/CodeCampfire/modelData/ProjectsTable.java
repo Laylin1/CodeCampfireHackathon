@@ -9,10 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document (collection = "Projects")
 public class ProjectsTable {
 
-    @Id
-    private String id;
-
-
+    private @Id String id;
     private String title;
     private String description;
     private String category;
@@ -29,9 +26,12 @@ public class ProjectsTable {
         return id;
     }
 
+    
     public void setId(String id){
         this.id = id;
     }
+
+   
 
     public String getTitle(){
         return title;
