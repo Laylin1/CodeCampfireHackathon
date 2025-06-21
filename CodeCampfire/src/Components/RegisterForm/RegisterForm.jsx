@@ -15,7 +15,6 @@ export default function RegisterForm() {
     const onSubmit = (data) => {
         console.log("Login Data:", data);
         reset()
-
         navigate("/signin")
     };
 
@@ -87,9 +86,7 @@ export default function RegisterForm() {
                                 {errors.password.message}
                             </p>
                         )}
-                    </div>
-
-                    <div className="flex items-center justify-between">
+                    </div><div className="flex items-center justify-between">
                         <button
                             type="submit"
                             className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-5 py-2 rounded-4xl shadow-md hover:from-indigo-600 hover:to-purple-600 transition-all"

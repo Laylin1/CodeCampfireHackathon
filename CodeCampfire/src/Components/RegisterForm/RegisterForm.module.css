@@ -5,9 +5,7 @@
     font-size: 56px;
 
     font-weight: 700;
-    /* echivalent cu text-3xl în Tailwind */
     background: linear-gradient(to right, #6366f1, #a855f7);
-    /* indigo-500 → purple-500 */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

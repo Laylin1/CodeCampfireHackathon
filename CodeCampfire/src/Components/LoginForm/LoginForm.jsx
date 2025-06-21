@@ -1,9 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import cl from "./LoginForm.module.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
+    const navigate = useNavigate()
     const {
         register,
         handleSubmit,
@@ -12,6 +13,8 @@ export default function LoginForm() {
 
     const onSubmit = (data) => {
         console.log("Login Data:", data);
+        localStorage.setItem("user_id", true)
+        location.reload()
     };
 
     return (
@@ -74,7 +77,7 @@ export default function LoginForm() {
                             type="submit"
                             className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-5 py-2 rounded-4xl shadow-md hover:from-indigo-600 hover:to-purple-600 transition-all"
                         >
-                            Register
+                            Sign In
                         </button>
                         <Link
                             to={"/register"}
