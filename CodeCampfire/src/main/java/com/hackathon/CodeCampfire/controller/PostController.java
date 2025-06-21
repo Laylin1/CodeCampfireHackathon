@@ -97,7 +97,7 @@ public class PostController {
     }
 
 
-    @GetMapping("/getUsers")
+    @GetMapping("/users")
     public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = prepo.findAll();
         return ResponseEntity.ok(users);

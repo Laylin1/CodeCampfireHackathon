@@ -1,8 +1,5 @@
 package com.hackathon.CodeCampfire.modelData;
 
-import java.util.Arrays;
-
-import org.springframework.data.annotation.Id;
 
 import lombok.Getter;
 import lombok.Setter;
