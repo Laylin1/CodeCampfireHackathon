@@ -1,6 +1,8 @@
 package com.hackathon.CodeCampfire.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,12 +21,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.hackathon.CodeCampfire.Repo.PostRepo;
 import com.hackathon.CodeCampfire.Repo.PostRepoChallenges;
 import com.hackathon.CodeCampfire.Repo.PostRepoProjects;
+import com.hackathon.CodeCampfire.Repo.PostRepoRequests;
 import com.hackathon.CodeCampfire.modelData.AuthDTO;
 import com.hackathon.CodeCampfire.modelData.ChallengeCreateDTO;
 import com.hackathon.CodeCampfire.modelData.Challenges;
 import com.hackathon.CodeCampfire.modelData.LoginDTO;
 import com.hackathon.CodeCampfire.modelData.ProjectCreateDTO;
 import com.hackathon.CodeCampfire.modelData.ProjectsTable;
+import com.hackathon.CodeCampfire.modelData.RequestCreateDTO;
+import com.hackathon.CodeCampfire.modelData.Requests;
 import com.hackathon.CodeCampfire.modelData.Users;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,6 +51,9 @@ public class PostController {
 
     @Autowired
     PostRepoChallenges preroChallenges;
+
+    @Autowired
+    PostRepoRequests preroRequests;
 
     //перенаправление при обращении к корню проекта
     @RequestMapping(value="/")
@@ -152,6 +160,70 @@ public class PostController {
     public ResponseEntity<List<Challenges>> getUserChallenges(@PathVariable String id) {
         List<Challenges> challenges = preroChallenges.findByAuthor(id);
         return ResponseEntity.ok(challenges);
+    }
+
+
+
+
+
+    @PostMapping("/createRequest")
+    public ResponseEntity<String> createRequest(@RequestBody RequestCreateDTO request) {
+        preroRequests.save(request.toRequests());
+        return ResponseEntity.ok("Request created successfully!");
+    }
+
+    @GetMapping("/userRequests/{id}")
+    public ResponseEntity<List<Requests>> getUserRequests(@PathVariable String id) {
+        List<Requests> requests = preroRequests.findByAuthor(id);
+        return ResponseEntity.ok(requests);
+    }
+
+
+    @GetMapping("/toUserRequests/{id}")
+    public ResponseEntity<List<Requests>> getUserRequestsByProjectAuthor(@PathVariable String id) {
+        List<Requests> requests = preroRequests.findByProjectAuthor(id);
+        return ResponseEntity.ok(requests);
+    }
+
+    @GetMapping("/acceptRequest/{id}")
+    public ResponseEntity<String> acceptRequest(@PathVariable String id) {
+        Optional<Requests> requestOpt = preroRequests.findById(id);
+
+        if (requestOpt.isPresent()) {
+            Requests request = requestOpt.get();
+            Optional<ProjectsTable> projectOpt = preroProj.findById(request.getProject());
+            if (projectOpt.isPresent()) {
+                ProjectsTable project = projectOpt.get();
+                List<String> coAuthors = new ArrayList<>(Arrays.asList(project.getCoAuthors()));
+
+                if (coAuthors.contains(request.getAuthor())) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Author already exists in the project");
+                }
+                coAuthors.add(request.getAuthor());
+                project.setCoAuthors(coAuthors.toArray(new String[0]));
+                preroProj.save(project);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
+            }
+            preroRequests.delete(request);
+            return ResponseEntity.ok("Request accepted");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request not found");
+        }
+    }
+
+    @GetMapping("/declineRequest/{id}")
+    public ResponseEntity<String> declineRequest(@PathVariable String id) {
+        Optional<Requests> requestOpt = preroRequests.findById(id);
+
+        if (requestOpt.isPresent()) 
+        {
+            Requests request = requestOpt.get();
+            preroRequests.delete(request);
+            return ResponseEntity.ok("Request declined");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request not found");
+        }
     }
 
 }
