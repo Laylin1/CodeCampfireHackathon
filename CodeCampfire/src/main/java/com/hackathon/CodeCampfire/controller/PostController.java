@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class PostController {
 
     @Autowired
@@ -54,6 +56,7 @@ public class PostController {
     
     //Получение человека по Id
     @GetMapping("/getUser/{id}")
+    @CrossOrigin
     public ResponseEntity<Users> getUserData(@PathVariable String id) {
         Optional<Users> userOpt = prepo.findById(id);
 
@@ -63,10 +66,11 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
+        
 
     //Отправка данных для авторизации
     @PostMapping("/postAuthData")
+    @CrossOrigin
     public Users postAuth(@RequestBody AuthDTO dto) {
         Users user = new Users();
         user.setUsername(dto.getUsername());
@@ -76,9 +80,9 @@ public class PostController {
         return prepo.save(user);
     }
 
-
     // отправляет данные от логина
     @PostMapping("/login")
+    @CrossOrigin
     public ResponseEntity<String> login(@RequestBody LoginDTO dto) {
         Optional<Users> userOpt = prepo.findByEmail(dto.getEmail());
 
@@ -92,12 +96,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
     }
 
-
-        return ResponseEntity.ok("Login successful!");
+    
+        return ResponseEntity.ok(userOpt.get().getId());
     }
 
 
     @GetMapping("/users")
+    @CrossOrigin
     public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = prepo.findAll();
         return ResponseEntity.ok(users);
@@ -105,12 +110,14 @@ public class PostController {
 
 
     @PostMapping("/createProject")
+    @CrossOrigin
     public ProjectsTable postproj(@RequestBody ProjectCreateDTO post){
         return preroProj.save(post.toProjectsTable());
     }
 
 
     @GetMapping("/projects")
+    @CrossOrigin
     public ResponseEntity<List<ProjectsTable>> getAllProjects() 
     {
         List<ProjectsTable> projects = preroProj.findAll();
@@ -118,6 +125,7 @@ public class PostController {
     }
 
     @GetMapping("/getUserProjects/{id}")
+    @CrossOrigin
     public ResponseEntity<List<ProjectsTable>> getUserProjects(@PathVariable String id) {
         List<ProjectsTable> projects = preroProj.findByAuthor(id);
         return ResponseEntity.ok(projects);
@@ -125,12 +133,14 @@ public class PostController {
 
 
     @PostMapping("/createChallenge")
+    @CrossOrigin
     public ResponseEntity<String> createChallenge(@RequestBody ChallengeCreateDTO challenge) {
         preroChallenges.save(challenge.toChallenges());
         return ResponseEntity.ok("Challenge created successfully!");
     }
 
     @GetMapping("/challenges")
+    @CrossOrigin
     public ResponseEntity<List<Challenges>> getAllChallenges() 
     {
         List<Challenges> challenges = preroChallenges.findAll();
@@ -138,6 +148,7 @@ public class PostController {
     }
 
     @GetMapping("/getUserChallenges/{id}")
+    @CrossOrigin
     public ResponseEntity<List<Challenges>> getUserChallenges(@PathVariable String id) {
         List<Challenges> challenges = preroChallenges.findByAuthor(id);
         return ResponseEntity.ok(challenges);
