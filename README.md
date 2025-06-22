@@ -36,9 +36,11 @@ Project Description:
 # Swagger UI: http://localhost:8080/swagger-ui.html
 
 ### Frontend
+```bash
 npm install
-npm start
 
+npm start
+```
 ## Authorization
 
 - Authorization via email and password
