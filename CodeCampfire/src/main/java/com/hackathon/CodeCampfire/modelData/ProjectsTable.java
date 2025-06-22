@@ -5,6 +5,9 @@ import java.util.Arrays;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Document (collection = "Projects")
 public class ProjectsTable {
@@ -12,6 +15,10 @@ public class ProjectsTable {
     private @Id String id;
     private String title;
     private String description;
+
+    @Getter @Setter
+    private String postDate;
+
     private String category;
     private String technologies[];
     private String coAuthors[];
