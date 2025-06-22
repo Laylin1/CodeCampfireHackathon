@@ -38,7 +38,7 @@ export default function Sidebar() {
                 <ul className="p-6 space-y-4 text-gray-800 font-medium">
                     <li>
                         <Link
-                            to="/"
+                            to="/dashboard"
                             className="block px-3 py-2 rounded-lg hover:bg-indigo-100 transition"
                             onClick={() => setOpen(false)}
                         >
@@ -47,7 +47,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                         <Link
-                            to="/"
+                            to="/projects"
                             className="block px-3 py-2 rounded-lg hover:bg-indigo-100 transition"
                             onClick={() => setOpen(false)}
                         >
@@ -56,7 +56,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                         <Link
-                            to="/"
+                            to="/events"
                             className="block px-3 py-2 rounded-lg hover:bg-indigo-100 transition"
                             onClick={() => setOpen(false)}
                         >
@@ -65,7 +65,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                         <Link
-                            to="/"
+                            to="/geeks"
                             className="block px-3 py-2 rounded-lg hover:bg-indigo-100 transition"
                             onClick={() => setOpen(false)}
                         >
