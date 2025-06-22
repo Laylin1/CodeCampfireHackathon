@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainPage from './Components/MainPage/MainPage';
@@ -46,3 +47,4 @@ export default function App() {
     </>
   );
 }
+
