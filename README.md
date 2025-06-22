@@ -1,7 +1,6 @@
 # CodeCampfireHackathon
 
-Project Description:
-  A platform for collaborative project development among IT enthusiasts. Allows users to create accounts, publish projects and join teams. There is also an opportunity for companies to create challenges and hire IT enthusiasts.
+A platform for collaborative project development among IT enthusiasts. Allows users to create accounts, publish projects and join teams. There is also an opportunity for companies to create challenges and hire IT enthusiasts.
 
 ## Functional
 - User registration and authorization
